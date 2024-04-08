@@ -30,9 +30,10 @@ for folder_name in os.listdir(root_folder):
                         
                         # Read the image using OpenCV
                         image = cv2.imread(image_path)
-                        
+                
                         # Process the image for gait recognition (e.g., feature extraction, normalization, etc.)
                         # Your gait recognition code goes here
+                        
                         
                         # Example: Display the image
                         cv2.imshow('Image', image)
