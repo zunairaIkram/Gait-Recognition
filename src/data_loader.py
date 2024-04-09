@@ -1,6 +1,6 @@
 import os
 import cv2
-from preprocessing import histogram_equalization, image_threshold
+from preprocessing import histogram_equalization, image_threshold, detect_edges
 def read_images(root_folder):
     frames = []
     # Iterate through each subfolder in the root folder
@@ -35,7 +35,7 @@ def read_images(root_folder):
                             if image is not None:
                                 image_eq = histogram_equalization(image)
                                 image_thres = image_threshold(image_eq)
-                                
+                                #image_edge = detect_edges(image_thres)
                                 
 
                                 
