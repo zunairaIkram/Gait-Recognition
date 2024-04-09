@@ -15,10 +15,29 @@ def histogram_equalization(image):
 
 def image_threshold(image):
     # Convert the image to grayscale
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    if len(image.shape) != 2:
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    else:
+        gray = image
     # Apply background subtraction (optional)
     # foreground_mask = apply_background_subtraction(gray)
     _, thresholded_image = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
     return thresholded_image
+
+
+#not being used yet
+def detect_edges(image): #with otsu(for automatic selecting threshold value)
+    if len(image.shape) != 2:
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    else:
+        gray = image
+    # Apply Gaussian blur to reduce noise
+    blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+    # Apply Otsu's thresholding
+    _, binary = cv2.threshold(blurred, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+    # Perform edge detection
+    edges = cv2.Canny(binary, 0.5 * cv2.threshold(binary, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[0],
+                      cv2.threshold(binary, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[0])
+    return edges
 
 
