@@ -1,7 +1,6 @@
 import os
 import cv2
-from preprocessing import histogram_equalization
-
+from preprocessing import histogram_equalization, image_threshold
 def read_images(root_folder):
     frames = []
     # Iterate through each subfolder in the root folder
@@ -35,10 +34,18 @@ def read_images(root_folder):
 
                             if image is not None:
                                 image_eq = histogram_equalization(image)
-                                frames.append(image_eq)
+                                image_thres = image_threshold(image_eq)
+                                
+                                
+
+                                
+
+                                
+                                
+                                frames.append(image_thres)
                             
                                 # Display the image
-                                cv2.imshow('Image', image_eq)
+                                cv2.imshow('Image', image_thres)
                                 cv2.waitKey(0)
                                 cv2.destroyAllWindows()
                             else:
