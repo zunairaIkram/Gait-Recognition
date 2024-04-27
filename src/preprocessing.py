@@ -12,6 +12,14 @@ def image_threshold(image):
     _, thresholded_image = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
     return thresholded_image
 
+# Function to calculate standard deviation of an image
+def calculate_std_dev(image):
+    if len(image.shape) == 3:  # Color image
+        gray_image = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
+    else:
+        gray_image = image
+    return np.std(gray_image)
+
 def histogram_equalization(image):
     if len(image.shape) == 2:  # If a Grayscale image
         image_gray = cv2.equalizeHist(image_gray)
@@ -24,23 +32,24 @@ def histogram_equalization(image):
         image_RGB = cv2.cvtColor(img_hsv, cv2.COLOR_HSV2RGB)
         return image_RGB
 
-def CLAHE(image):                                          #Contrast Limited Adaptive Histogram Equalization
-     # Check if the image is grayscale
-    if len(image.shape) == 2:
-        # Create a CLAHE object (with default parameters)
-        clahe = cv2.createCLAHE()
-        # Apply CLAHE on the grayscale image
-        return clahe.apply(image)
+def CLAHE(image, std_dev_threshold=20):                                          #Contrast Limited Adaptive Histogram Equalization
+    # Check the standard deviation of the image
+    if calculate_std_dev(image) < std_dev_threshold:
+        # Image needs contrast enhancement
+        if len(image.shape) == 2:  # Grayscale image
+            clahe = cv2.createCLAHE()
+            return clahe.apply(image)
+        else:  # RGB image, assumed to be in RGB format as per function description
+            # Convert image from RGB to HSV (OpenCV uses BGR by default)
+            img_hsv = cv2.cvtColor(image, cv2.COLOR_RGB2HSV)
+            # Create a CLAHE object (with default parameters)
+            clahe = cv2.createCLAHE()
+            # Apply CLAHE on the V-channel
+            img_hsv[:, :, 2] = clahe.apply(img_hsv[:, :, 2])
+            return cv2.cvtColor(img_hsv, cv2.COLOR_HSV2RGB)
     else:
-        # Convert image from RGB to HSV (OpenCV uses BGR by default)
-        img_hsv = cv2.cvtColor(image, cv2.COLOR_RGB2HSV)
-        # Create a CLAHE object (with default parameters)
-        clahe = cv2.createCLAHE()
-        # Apply CLAHE on the V-channel
-        img_hsv[:, :, 2] = clahe.apply(img_hsv[:, :, 2])
-        # Convert back to RGB
-        return cv2.cvtColor(img_hsv, cv2.COLOR_HSV2RGB)
-
+        # Return the original image if standard deviation is above the threshold
+        return image
 
 #not being used yet, for simplicity use edges = cv2.Canny(gray, 100, 255) if required
 def detect_edges(image): #with otsu(for automatic selecting threshold value)
@@ -53,8 +62,9 @@ def detect_edges(image): #with otsu(for automatic selecting threshold value)
     # Apply Otsu's thresholding
     _, binary = cv2.threshold(blurred, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
     # Perform edge detection
-    edges = cv2.Canny(binary, 0.5 * cv2.threshold(binary, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[0],
-                      cv2.threshold(binary, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[0])
+    high_thresh, _ = cv2.threshold(blurred, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+    low_thresh = 0.5 * high_thresh
+    edges = cv2.Canny(blurred, low_thresh, high_thresh)
     return edges
 
 
