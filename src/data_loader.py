@@ -1,7 +1,22 @@
+import matplotlib.pyplot as plt
 import os
 import cv2
 import numpy as np
 from preprocessing import CLAHE, histogram_equalization, image_threshold, detect_edges, extract_binary_mask, silhoutte_extract
+
+def display_images_with_matplotlib(image_list, titles):
+    # Set up the figure and axes
+    fig, axes = plt.subplots(1, len(image_list), figsize=(10, 5))  # Adjust size as needed
+    for ax, img, title in zip(axes, image_list, titles):
+        # OpenCV reads images in BGR, convert to RGB for correct color display in Matplotlib
+        if img.ndim == 3:
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        ax.imshow(img, cmap='gray' if img.ndim == 2 else None)
+        ax.set_title(title)
+        ax.axis('off')  # Turn off axis numbers and ticks
+    
+    plt.show()
+    
 def read_images(root_folder):
     frames = []
     # Iterate through each subfolder in the root folder
@@ -34,28 +49,17 @@ def read_images(root_folder):
                             # Your gait recognition code goes here
 
                             if image is not None:
-                                image_eq = CLAHE(image)        #Histogram Equalization
+                                image_eq = histogram_equalization(image) 
+                                # image_eq = CLAHE(image)        #Histogram
                                 #image_thres = image_threshold(image_eq)
                                 #image_edge = detect_edges(image_thres)
                                 gray = cv2.cvtColor(image_eq, cv2.COLOR_BGR2GRAY)
-                                
-                                
                                 binary_mask = extract_binary_mask(image)
-                                
                                 #silhoutte_mask = silhoutte_extract(image, binary_mask)
-                                
-                                
-                                
-                                
-                
-                                
-                                frames.append(binary_mask)
-                                
-                            
+                        
                                 # Display the image
-                                cv2.imshow('Image', binary_mask)
-                                cv2.waitKey(0)
-                                cv2.destroyAllWindows()
+                                display_images_with_matplotlib([image, image_eq, binary_mask],["Original Image", "CLAHE Enhanced", "Binary Mask"])
+
                             else:
                                 print(f"Failed to load image: {image_name}")
                             

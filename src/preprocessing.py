@@ -12,17 +12,17 @@ def image_threshold(image):
     _, thresholded_image = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
     return thresholded_image
 
-# def histogram_equalization(image):
-#     if len(image.shape) == 2:  # If a Grayscale image
-#         image_gray = cv2.equalizeHist(image_gray)
-#     else:  # RGB image
-#         # Convert image from RGB to HSV
-#         img_hsv = cv2.cvtColor(image, cv2.COLOR_RGB2HSV)
-#         # Histogram equalisation on the V-channel
-#         img_hsv[:, :, 2] = cv2.equalizeHist(img_hsv[:, :, 2])
-#         # Convert back to BGR
-#         image_RGB = cv2.cvtColor(img_hsv, cv2.COLOR_HSV2RGB)
-#         return image_RGB
+def histogram_equalization(image):
+    if len(image.shape) == 2:  # If a Grayscale image
+        image_gray = cv2.equalizeHist(image_gray)
+    else:  # RGB image
+        # Convert image from RGB to HSV
+        img_hsv = cv2.cvtColor(image, cv2.COLOR_RGB2HSV)
+        # Histogram equalisation on the V-channel
+        img_hsv[:, :, 2] = cv2.equalizeHist(img_hsv[:, :, 2])
+        # Convert back to BGR
+        image_RGB = cv2.cvtColor(img_hsv, cv2.COLOR_HSV2RGB)
+        return image_RGB
 
 def CLAHE(image):                                          #Contrast Limited Adaptive Histogram Equalization
      # Check if the image is grayscale
