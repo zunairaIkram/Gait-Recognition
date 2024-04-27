@@ -1,7 +1,7 @@
 import os
 import cv2
 import numpy as np
-from preprocessing import histogram_equalization, image_threshold, detect_edges, extract_binary_mask, silhoutte_extract
+from preprocessing import CLAHE, histogram_equalization, image_threshold, detect_edges, extract_binary_mask, silhoutte_extract
 def read_images(root_folder):
     frames = []
     # Iterate through each subfolder in the root folder
@@ -34,7 +34,7 @@ def read_images(root_folder):
                             # Your gait recognition code goes here
 
                             if image is not None:
-                                image_eq = histogram_equalization(image)
+                                image_eq = CLAHE(image)        #Histogram Equalization
                                 #image_thres = image_threshold(image_eq)
                                 #image_edge = detect_edges(image_thres)
                                 gray = cv2.cvtColor(image_eq, cv2.COLOR_BGR2GRAY)
@@ -47,7 +47,7 @@ def read_images(root_folder):
                                 
                                 
                                 
-                                
+                
                                 
                                 frames.append(binary_mask)
                                 
