@@ -25,7 +25,7 @@ def image_threshold(image):
     return thresholded_image
 
 
-#not being used yet
+#not being used yet, for simplicity use edges = cv2.Canny(gray, 100, 255) if required
 def detect_edges(image): #with otsu(for automatic selecting threshold value)
     if len(image.shape) != 2:
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -40,4 +40,35 @@ def detect_edges(image): #with otsu(for automatic selecting threshold value)
                       cv2.threshold(binary, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[0])
     return edges
 
+
+def extract_binary_mask(image):
+    # Convert image to grayscale
+    if len(image.shape) != 2:
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    else:
+        gray = image
+    # Apply thresholding to obtain binary mask
+    _, binary_mask1 = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+    binary_mask2 = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 11, 5)
+    binary_mask = cv2.bitwise_and(binary_mask1, binary_mask2)
+    return binary_mask
+
+def silhoutte_extract(image, binary_mask):
+        if len(image.shape) != 2:
+            gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        else:
+            gray = image
+        
+        contours, _ = cv2.findContours(binary_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        # Create an empty mask for the silhouette
+        mask = np.zeros_like(gray)
+        # Draw contours on the silhouette mask
+        cv2.drawContours(mask, contours, -1, (255), thickness=cv2.FILLED)
+        # Apply morphological operations to refine the silhouette
+        # kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
+        # mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel)
+        # mask = cv2.bitwise_and(image, image, mask=mask)     
+        return mask   
+
+     
 

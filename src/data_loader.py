@@ -1,6 +1,7 @@
 import os
 import cv2
-from preprocessing import histogram_equalization, image_threshold, detect_edges
+import numpy as np
+from preprocessing import histogram_equalization, image_threshold, detect_edges, extract_binary_mask, silhoutte_extract
 def read_images(root_folder):
     frames = []
     # Iterate through each subfolder in the root folder
@@ -34,18 +35,25 @@ def read_images(root_folder):
 
                             if image is not None:
                                 image_eq = histogram_equalization(image)
-                                image_thres = image_threshold(image_eq)
+                                #image_thres = image_threshold(image_eq)
                                 #image_edge = detect_edges(image_thres)
-                                
-
-                                
-
+                                gray = cv2.cvtColor(image_eq, cv2.COLOR_BGR2GRAY)
                                 
                                 
-                                frames.append(image_thres)
+                                binary_mask = extract_binary_mask(image)
+                                
+                                #silhoutte_mask = silhoutte_extract(image, binary_mask)
+                                
+                                
+                                
+                                
+                                
+                                
+                                frames.append(binary_mask)
+                                
                             
                                 # Display the image
-                                cv2.imshow('Image', image_thres)
+                                cv2.imshow('Image', binary_mask)
                                 cv2.waitKey(0)
                                 cv2.destroyAllWindows()
                             else:
