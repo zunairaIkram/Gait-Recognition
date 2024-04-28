@@ -35,14 +35,20 @@ def read_images(root_folder):
 
                             if image is not None:
                                 image_eq = histogram_equalization(image)
-                                #image_thres = image_threshold(image_eq)
+                                image_thres = image_threshold(image_eq)
                                 #image_edge = detect_edges(image_thres)
-                                gray = cv2.cvtColor(image_eq, cv2.COLOR_BGR2GRAY)
+                                gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+                                #bg_subtractor = cv2.createBackgroundSubtractorMOG2()
+                                
+                                #foreground_mask = bg_subtractor.apply(image_thres)
                                 
                                 
-                                binary_mask = extract_binary_mask(image)
+                                blurred_image = cv2.GaussianBlur(gray, (5, 5), 0)
+                                binary_mask = binary_mask = cv2.adaptiveThreshold(blurred_image, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 11, 2)
                                 
-                                #silhoutte_mask = silhoutte_extract(image, binary_mask)
+                                
+                                
+                                # silhoutte_mask = silhoutte_extract(image, binary_mask)
                                 
                                 
                                 
