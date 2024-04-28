@@ -21,7 +21,7 @@ def image_threshold(image):
         gray = image
     # Apply background subtraction (optional)
     # foreground_mask = apply_background_subtraction(gray)
-    _, thresholded_image = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+    _, thresholded_image = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
     return thresholded_image
 
 
@@ -67,8 +67,6 @@ def silhoutte_extract(image, binary_mask):
         # Apply morphological operations to refine the silhouette
         # kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
         # mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel)
-        # mask = cv2.bitwise_and(image, image, mask=mask)     
-        return mask   
-
-     
-
+        # mask = cv2.bitwise_and(image, image, mask=mask)  
+           
+        return mask
