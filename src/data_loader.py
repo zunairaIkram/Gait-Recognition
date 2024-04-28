@@ -51,15 +51,15 @@ def read_images(root_folder):
                             if image is not None:
                                 # image_eq = histogram_equalization(image) 
                                 image_eq = CLAHE(image)        #Histogram
-                                gray = cv2.cvtColor(image_eq, cv2.COLOR_BGR2GRAY)
-                                image_edge = detect_edges(gray)
                                 #image_thres = image_threshold(image_eq)
-                                binary_mask = extract_binary_mask(gray)
+                                
+                                gray = cv2.cvtColor(image_eq, cv2.COLOR_BGR2GRAY)
+                                image_edge = detect_edges(image_eq)
+                                # binary_mask = extract_binary_mask(image)
                                 #silhoutte_mask = silhoutte_extract(image, binary_mask)
-                            
                         
                                 # Display the image
-                                display_images_with_matplotlib([image, image_eq, image_edge,  binary_mask],["Original Image", "CLAHE Enhanced", "detect_edges","binary_mask"])
+                                display_images_with_matplotlib([image, image_eq, image_edge],["Original Image", "CLAHE Enhanced", "detect_edges"])
 
                             else:
                                 print(f"Failed to load image: {image_name}")
