@@ -2,4 +2,6 @@
 
 Model free (Appearance based)
 
+Silhouette extraction from human gait images sequence using cosegmentation
+
 
