@@ -2,7 +2,8 @@ import matplotlib.pyplot as plt
 import os
 import cv2
 import numpy as np
-from preprocessing import CLAHE, histogram_equalization, image_threshold, detect_edges, extract_binary_mask, silhoutte_extract
+from preprocessing import CLAHE,  preprocess_image
+from silhouette_extraction import extract_silhouette
 
 def display_images_with_matplotlib(image_list, titles):
     # Set up the figure and axes
@@ -49,17 +50,12 @@ def read_images(root_folder):
                             # Your gait recognition code goes here
 
                             if image is not None:
-                                # image_eq = histogram_equalization(image) 
                                 image_eq = CLAHE(image)        #Histogram
-                                #image_thres = image_threshold(image_eq)
-                                
-                                gray = cv2.cvtColor(image_eq, cv2.COLOR_BGR2GRAY)
-                                image_edge = detect_edges(image_eq)
-                                # binary_mask = extract_binary_mask(image)
-                                #silhoutte_mask = silhoutte_extract(image, binary_mask)
+                                processed_image = preprocess_image(image_eq)
+                                # silhoutte = extract_silhouette(processed_image)
                         
                                 # Display the image
-                                display_images_with_matplotlib([image, image_eq, image_edge],["Original Image", "CLAHE Enhanced", "detect_edges"])
+                                display_images_with_matplotlib([image, image_eq, processed_image],["Original Image", "CLAHE Enhanced", "processed_image"])
 
                             else:
                                 print(f"Failed to load image: {image_name}")
