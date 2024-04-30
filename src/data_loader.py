@@ -54,7 +54,12 @@ def read_images(root_folder):
                                 image_eq = CLAHE(image)        #Histogram
                                 processed_image = preprocess_image(image_eq)
                                 # silhoutte = extract_silhouette(image, processed_image)
+
+
                                 segmented = object_detection_api(image)
+
+                        
+
                                 # Display the image
                                 display_images_with_matplotlib([image, image_eq, segmented ],["Original Image", "CLAHE Enhanced", "processed_image"])
 
