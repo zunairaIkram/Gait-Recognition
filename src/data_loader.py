@@ -4,6 +4,7 @@ import cv2
 import numpy as np
 from preprocessing import CLAHE,  preprocess_image
 from silhouette_extraction import extract_silhouette
+from segmentation_model import object_detection_api
 
 def display_images_with_matplotlib(image_list, titles):
     # Set up the figure and axes
@@ -53,9 +54,9 @@ def read_images(root_folder):
                                 image_eq = CLAHE(image)        #Histogram
                                 processed_image = preprocess_image(image_eq)
                                 # silhoutte = extract_silhouette(image, processed_image)
-                        
+                                segmented = object_detection_api(image)
                                 # Display the image
-                                display_images_with_matplotlib([image, image_eq, processed_image],["Original Image", "CLAHE Enhanced", "processed_image"])
+                                display_images_with_matplotlib([image, image_eq, segmented ],["Original Image", "CLAHE Enhanced", "processed_image"])
 
                             else:
                                 print(f"Failed to load image: {image_name}")
