@@ -6,5 +6,6 @@ root_folder = r"data\train\images"
 # Call the function to start processing images
 read_images(root_folder)
 
-# for frame in frames:
+
+#  for frame in frames:
 #     print(f"{frames[i]}\n")

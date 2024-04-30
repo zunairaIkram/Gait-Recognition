@@ -9,6 +9,7 @@ def calculate_std_dev(image):
         gray_image = image
     return np.std(gray_image)
 
+
 def CLAHE(image, std_dev_threshold=15):     #Contrast Limited Adaptive Histogram Equalization
     # Check the standard deviation of the image
     if calculate_std_dev(image) < std_dev_threshold:
