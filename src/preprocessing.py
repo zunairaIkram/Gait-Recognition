@@ -9,7 +9,7 @@ def calculate_std_dev(image):
         gray_image = image
     return np.std(gray_image)
 
-def CLAHE(image, std_dev_threshold=20):     #Contrast Limited Adaptive Histogram Equalization
+def CLAHE(image, std_dev_threshold=15):     #Contrast Limited Adaptive Histogram Equalization
     # Check the standard deviation of the image
     if calculate_std_dev(image) < std_dev_threshold:
         # Image needs contrast enhancement
@@ -42,6 +42,10 @@ def preprocess_image(image):
     kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
     binary = cv2.morphologyEx(binary, cv2.MORPH_CLOSE, kernel)
     binary = cv2.morphologyEx(binary, cv2.MORPH_OPEN, kernel)
+
+    #Dilation, Erosion
+    binary = cv2.dilate(binary, kernel, iterations=1)
+    binary = cv2.erode(binary, kernel, iterations=1)
 
     return binary
 
@@ -97,11 +101,11 @@ def preprocess_image(image):
 #     contours, _ = cv2.findContours(binary_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
 #     # Create an empty mask for the silhouette
-#     silhouette_mask = np.zeros_like(gray)
+#     binary = np.zeros_like(gray)
 
 #     # Draw contours on the silhouette mask
-#     cv2.drawContours(silhouette_mask, contours, -1, (255), thickness=cv2.FILLED)
+#     cv2.drawContours(binary, contours, -1, (255), thickness=cv2.FILLED)
 
-#     return silhouette_mask
+#     return binary
 
 

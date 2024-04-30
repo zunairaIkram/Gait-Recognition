@@ -52,7 +52,7 @@ def read_images(root_folder):
                             if image is not None:
                                 image_eq = CLAHE(image)        #Histogram
                                 processed_image = preprocess_image(image_eq)
-                                # silhoutte = extract_silhouette(processed_image)
+                                # silhoutte = extract_silhouette(image, processed_image)
                         
                                 # Display the image
                                 display_images_with_matplotlib([image, image_eq, processed_image],["Original Image", "CLAHE Enhanced", "processed_image"])
@@ -66,4 +66,5 @@ def read_images(root_folder):
                     print(f"Skipping non-directory: {sub_folder_name}")
         else:
             print(f"Skipping non-directory: {folder_name}")
+
     return frames
