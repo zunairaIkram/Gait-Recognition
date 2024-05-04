@@ -43,7 +43,7 @@ def get_prediction(img, threshold):
 
     # Filter predictions for the specified classes
     relevant_indices = [i for i, label in enumerate(pred_labels) 
-                        if label in [1, 27, 31, 0] and pred_scores[i] > threshold]
+                        if label in [1, 0] and pred_scores[i] > threshold]
 
     pred_boxes = pred_boxes[relevant_indices]
     pred_labels = pred_labels[relevant_indices]
@@ -60,13 +60,14 @@ def get_prediction(img, threshold):
     # pred_class = pred_class[:pred_t+1]
     # return pred_boxes, pred_class
 
-def object_detection_api(img, threshold=0.5, rect_th=3, text_size=3, text_th=3, fileName ='Seg.png'):
+def object_detection_api(img, threshold=0.9, rect_th=3, text_size=3, text_th=3, fileName ='Seg.png'):
     boxes, pred_cls = get_prediction(img, threshold)
     #img = cv2.imread(img_path)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-#     kernel = np.ones((3, 3), np.uint8)
-#     img = cv2.dilate(img, kernel, iterations=50)
+    # kernel = np.ones((3, 3), np.uint8)
+    # img = cv2.dilate(img, kernel, iterations=50)
     print(boxes)
+    print(len(boxes))
     for i in range(len(boxes)):
         mask = np.zeros(img.shape[:2],np.uint8)
         bgdModel = np.zeros((1,65),np.float64)
@@ -82,7 +83,7 @@ def object_detection_api(img, threshold=0.5, rect_th=3, text_size=3, text_th=3, 
         # plt.xticks([])
         # plt.yticks([])
         # plt.show()
-        # #cv2.imwrite(fileName, outputMask)
+        cv2.imwrite(fileName, outputMask)
         return outputMask
 
     # plt.figure(figsize=(20,30))
