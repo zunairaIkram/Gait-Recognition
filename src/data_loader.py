@@ -2,10 +2,11 @@ import matplotlib.pyplot as plt
 import os
 import cv2
 import numpy as np
-from preprocessing import CLAHE,  preprocess_image
+from preprocessing import CLAHE,  preprocess_image, preprocess_image1
 from silhouette_extraction import extract_silhouette
 from segmentation_model import object_detection_api
 from Extraction_Model import Silhoutte_Extraction
+from FCN_model_for_extraction import object_segmentation_api
 import os
 
 def save_image(image, folder_path, file_name):
@@ -64,15 +65,15 @@ def read_images(root_folder, silhouette_folder):
                             # Your gait recognition code goes here
 
                             if image is not None:
-                                image_eq = CLAHE(image)        #Histogram
-                                processed_image = preprocess_image(image_eq)
-                                #silhoutte = extract_silhouette(image, processed_image)
-                                silhoutte = Silhoutte_Extraction(image)
-                                save_image(silhoutte, os.path.join(silhouette_folder, sub_folder_name, folder_name),  image_name)
-
-                                #segmented = object_detection_api(image_eq)
+                                # image_eq = CLAHE(image)        #Histogram
+                                
+                                silhouette = object_segmentation_api(image)
+                                _, thresholded_image = cv2.threshold(silhouette, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+                                silhouette_path = os.path.join(silhouette_folder, folder_name, sub_folder_name)
+                                save_image(thresholded_image, silhouette_path, image_name)
+                                
                                 # Display the image
-                                display_images_with_matplotlib([image, silhoutte],["Original Image", "processed_image"])
+                                display_images_with_matplotlib([image, thresholded_image],["Original Image", "processed_image"])
 
                             else:
                                 print(f"Failed to load image: {image_name}")
