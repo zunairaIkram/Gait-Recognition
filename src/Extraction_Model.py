@@ -76,10 +76,10 @@ def Silhoutte_Extraction(img):
         # Apply silhouette extraction to the frame
     mask = makeSegMask(img)
 
-        # Apply thresholding to convert mask to binary map
+    # Apply thresholding to convert mask to binary map
     ret, thresh = cv2.threshold(mask, 127, 255, cv2.THRESH_BINARY)
 
-        # Show extracted silhouette only, by multiplying mask and input frame
+    # Show extracted silhouette only, by multiplying mask and input frame
     final = cv2.bitwise_and(thresh, img)
 
     return thresh

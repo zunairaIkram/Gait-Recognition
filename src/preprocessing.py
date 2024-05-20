@@ -9,10 +9,6 @@ def calculate_std_dev(image):
         gray_image = image
     return np.std(gray_image)
 
-<<<<<<< HEAD
-
-=======
->>>>>>> main
 def CLAHE(image, std_dev_threshold=15):     #Contrast Limited Adaptive Histogram Equalization
     # Check the standard deviation of the image
     if calculate_std_dev(image) < std_dev_threshold:
@@ -31,7 +27,7 @@ def CLAHE(image, std_dev_threshold=15):     #Contrast Limited Adaptive Histogram
     else:
         # Return the original image if standard deviation is above the threshold
         return image
-    
+
 def preprocess_image(image):
     # Convert image to grayscale
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -48,13 +44,13 @@ def preprocess_image(image):
     binary = cv2.morphologyEx(binary, cv2.MORPH_OPEN, kernel)
 
     #Dilation, Erosion
-    binary = cv2.dilate(binary, kernel, iterations=1)
+    # binary = cv2.dilate(binary, kernel, iterations=1)
     binary = cv2.erode(binary, kernel, iterations=1)
 
     return binary
 
 
-# #not being used yet, for simplicity use edges = cv2.Canny(gray, 100, 255) if required
+#not being used yet, for simplicity use edges = cv2.Canny(gray, 100, 255) if required
 # def detect_edges(image): #with otsu(for automatic selecting threshold value)
 #     if len(image.shape) != 2:
 #         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)

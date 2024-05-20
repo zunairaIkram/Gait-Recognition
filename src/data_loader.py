@@ -20,7 +20,7 @@ def save_image(image, folder_path, file_name):
 
 def display_images_with_matplotlib(image_list, titles):
     # Set up the figure and axes
-    fig, axes = plt.subplots(1, len(image_list), figsize=(10, 5))  # Adjust size as needed
+    fig, axes = plt.subplots(1, len(image_list))  # Adjust size as needed
     for ax, img, title in zip(axes, image_list, titles):
         # OpenCV reads images in BGR, convert to RGB for correct color display in Matplotlib
         if img.ndim == 3:
