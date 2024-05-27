@@ -1,22 +1,27 @@
 import cv2
-import numpy as np
 from PIL import Image
 import torch
 import torch.nn as nn
-import argparse
-
 from model.model import HumanMatting
 import inference
+import torch
+print("PyTorch version:", torch.__version__)
+print("CUDA available:", torch.cuda.is_available())
+print("CUDA version:", torch.version.cuda)
 
-def get_silhouette(image, pretrained_weight = r"C:\Users\Fakhi\Desktop\dipProject\Gait-Recognition\src\pretrained\SGHM-ResNet50.pth"):
+
+def get_silhouette(image, pretrained_weight = r"C:\Users\Farzam\Downloads\silhouette_extraction\pretrained\SGHM-ResNet50.pth"):
     # Load Model
     model = HumanMatting(backbone='resnet50')
     device = 'cpu'  # Initialize as CPU, change to 'cuda' if available
     if torch.cuda.is_available():
+        # print("CUDA is available! Training on GPU.")
         device = 'cuda'
         model = nn.DataParallel(model).cuda().eval()
         model.load_state_dict(torch.load(pretrained_weight))
-    else:
+    else:   
+        device = "cpu"
+        # print("CUDA is not available. Training on CPU.")
         state_dict = torch.load(pretrained_weight, map_location="cpu")
         from collections import OrderedDict
         new_state_dict = OrderedDict()
