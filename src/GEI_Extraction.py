@@ -1,16 +1,10 @@
-# coding: utf-8
-
 # Gait Energy Image
-
 import os
 import numpy as np
 import matplotlib.pyplot as plt
 from imageio import imread
 from skimage.transform import resize
-
 # Define the base directories
-segmentation_base_dir = r"C:\Users\Fakhi\Desktop\dipProject\train\segmentations"
-gei_base_dir = r"C:\Users\Fakhi\Desktop\dipProject\train\gei\yy"
 
 # Function to check if a file is an image
 def is_image_file(filename):
@@ -51,7 +45,7 @@ def image_extract(img,newsize):
 def create_gei(segmentation_base_dir, gei_base_dir, newsize=(128, 64)):
     if not os.path.exists(gei_base_dir):
         os.makedirs(gei_base_dir)
-
+    gei_results = {}
     for person_id in os.listdir(segmentation_base_dir):
         person_dir = os.path.join(segmentation_base_dir, person_id)
         if os.path.isdir(person_dir):
@@ -82,9 +76,9 @@ def create_gei(segmentation_base_dir, gei_base_dir, newsize=(128, 64)):
                         print(f"gei shape: {gei.shape}")
                         gei_filename = os.path.join(person_gei_dir, f"{scene_id}.jpg")
                         plt.imsave(gei_filename, gei, cmap='gray')
+                        gei_results[(person_id, scene_id)] = gei
                         # print(f"GEI saved for {scene_id} at {gei_filename}")
 
-# Create GEI for each person and scene
-create_gei(segmentation_base_dir, gei_base_dir)
+    return gei_results
 
 print("GEI generation complete.")
