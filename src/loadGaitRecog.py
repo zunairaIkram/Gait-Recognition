@@ -18,7 +18,7 @@ lg_model = pickle.load(open('finalized_model_10_labels.sav', 'rb'))
 pca_model = pickle.load(open('pca_model_4_labels.sav', 'rb'))
 
 # Path to the new image
-new_image_path = r'E:\Zunaira\UniversityCourses\Semester5\DIP\PROJECT(Human Gait Recognition)\Development\data\train\segmentations\002\scene1_bg_L_090_1\015.jpg'
+# new_image_path = r'E:\Zunaira\UniversityCourses\Semester5\DIP\PROJECT(Human Gait Recognition)\Development\data\train\segmentations\002\scene1_bg_L_090_1\015.jpg'
 
 # Preprocess the image
 processed_image = preprocess_image(new_image_path, (200, 250))
