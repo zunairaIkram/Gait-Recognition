@@ -77,15 +77,15 @@ def process_and_save_silhouettes(data, silhouette_folder, silhouette_data_file):
     print("All silhouette data has been saved to the pickle file.")
 
 
-def process_and_save_geis(segmentation_base_dir, gei_folder, gei_data_file, newsize=(128, 64)):
-    gei_results = create_gei(segmentation_base_dir, gei_folder, newsize)
+def process_and_save_geis(silhouette_data, gei_folder, gei_data_file, newsize=(128, 64)):
+    gei_results = create_gei(silhouette_data, gei_folder, newsize)
     gei_data = []
     total_geis = len(gei_results)
     for idx, ((person_id, scene_id), gei) in enumerate(gei_results.items(), start=1):
         print(f"Processing GEI {idx}/{total_geis}: {person_id} scene {scene_id}")
-        gei_path = os.path.join(gei_folder, person_id, scene_id)
-        filename = f"{person_id}_{scene_id}.png"
-        save_dir(gei, gei_path, filename)
+        # gei_path = os.path.join(gei_folder, person_id, scene_id)
+        # filename = f"{person_id}_{scene_id}.jpg"
+        # save_dir(gei, gei_path, filename)
         gei_data.append((person_id, scene_id, gei))
     save_pkl(gei_data, gei_data_file)
     print("All GEI data has been saved to the pickle file.")
