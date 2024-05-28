@@ -47,12 +47,6 @@ def extract_geis():
             return True, "GEIs already extracted and saved to pickle file."
         else:
             silhouette_data = load_data_pkl(silhouette_data_file)
-            if isinstance(silhouette_data, list):
-                silhouette_data_dict = {}
-                for person_id, scenes in silhouette_data:
-                    silhouette_data_dict[person_id] = scenes
-                silhouette_data = silhouette_data_dict
-
             process_and_save_geis(silhouette_data, gei_folder, gei_data_file)
             return True, "GEIs extracted successfully."
     except Exception as e:
@@ -64,7 +58,7 @@ def train_model():
             return False, "GEI data not found. Please extract GEI data first."
         else:
             gei_data = load_data_pkl(gei_data_file)
-            acc = gait_recognition(gei_folder)
+            acc = gait_recognition(gei_data)
             return True, f"Model trained successfully. \n Accuracy Score of Model is: {acc}"
     except Exception as e:
         return False, f"Error training model: {e}"
