@@ -48,8 +48,7 @@ def load_images(root_folder):
                             print(f"Skipping non-image file: {image_name} ({images_processed}/{total_images}) in {sub_folder_path}")
     return data
 
-import os
-import cv2
+
 
 def process_and_save_silhouettes(data, silhouette_folder, silhouette_data_file):
     silhouette_data = []
@@ -83,9 +82,6 @@ def process_and_save_geis(silhouette_data, gei_folder, gei_data_file, newsize=(1
     total_geis = len(gei_results)
     for idx, ((person_id, scene_id), gei) in enumerate(gei_results.items(), start=1):
         print(f"Processing GEI {idx}/{total_geis}: {person_id} scene {scene_id}")
-        # gei_path = os.path.join(gei_folder, person_id, scene_id)
-        # filename = f"{person_id}_{scene_id}.jpg"
-        # save_dir(gei, gei_path, filename)
         gei_data.append((person_id, scene_id, gei))
     save_pkl(gei_data, gei_data_file)
     print("All GEI data has been saved to the pickle file.")

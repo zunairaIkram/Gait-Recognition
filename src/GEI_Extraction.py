@@ -45,6 +45,7 @@ def image_extract(img,newsize):
 def create_gei(silhouette_data, gei_base_dir, newsize=(128, 64)):
     if not os.path.exists(gei_base_dir):
         os.makedirs(gei_base_dir)
+    
     gei_results = {}
     for person_id, scenes in silhouette_data.items():
         person_gei_dir = os.path.join(gei_base_dir, person_id)
