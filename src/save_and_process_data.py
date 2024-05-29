@@ -60,18 +60,18 @@ def process_and_save_silhouettes(data, silhouette_folder, silhouette_data_file):
             
             # Check if the silhouette already exists
             if os.path.exists(silhouette_path):
-                print(f"Silhouette already exists: {silhouette_path}. Skipping processing.")
-                continue
-            
-            print(f"Processing silhouette {idx}/{total_images}: {image_name} in {folder_name}/{sub_folder_name}")
-            silhouette = get_silhouette(image)
-            _, thresholded_image = cv2.threshold(silhouette, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-            
-            save_dir(thresholded_image, os.path.join(silhouette_folder, folder_name, sub_folder_name), image_name)
+                print(f"Silhouette already exists: {silhouette_path}. Loading instead of processing.")
+                thresholded_image = cv2.imread(silhouette_path, cv2.IMREAD_GRAYSCALE)
+            else:
+                print(f"Processing silhouette {idx}/{total_images}: {image_name} in {folder_name}/{sub_folder_name}")
+                silhouette = get_silhouette(image)
+                _, thresholded_image = cv2.threshold(silhouette, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+                save_dir(thresholded_image, os.path.join(silhouette_folder, folder_name, sub_folder_name), image_name)
+
             silhouette_data.append((folder_name, sub_folder_name, image_name, thresholded_image))
         else:
             print(f"Skipping invalid data item at index {idx}.")
-    
+
     save_pkl(silhouette_data, silhouette_data_file)
     print("All silhouette data has been saved to the pickle file.")
 

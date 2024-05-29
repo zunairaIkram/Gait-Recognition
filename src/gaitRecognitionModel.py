@@ -23,31 +23,26 @@ def gait_recognition(base_path):
         """Resize an image to the target size using high-quality resampling."""
         return image.resize(target_size, Image.Resampling.LANCZOS)
 
-    limit = 10
-    limit_count = 0
+    # limit = 11
+    # limit_count = 0
     for sub_dir in tqdm(os.listdir(base_path), desc="Processing directories"):
         
-        if limit_count == limit:
-            break
-        limit_count += 1
+        # if limit_count == limit:
+        #     break
+        # limit_count += 1
 
         label = int(sub_dir[1:])
         for sub_dir2 in os.listdir(os.path.join(base_path, sub_dir)):
             # image1 = np.zeros(target_size[::-1], dtype=np.float32)  # Note: np.zeros uses (height, width)
-            num_images = 0
             for filename in os.listdir(os.path.join(base_path, sub_dir, sub_dir2)):
                 if filename.endswith('.jpg'):
                     file_path = os.path.join(base_path, sub_dir, sub_dir2, filename)
                     img = Image.open(file_path).convert('L')
                     img = resize_image(img, target_size)
                     
-                    image1 = np.zeros(target_size[::-1], dtype=np.float32)
-                    
                     bw = np.array(img.point(lambda x: 0 if x < 128 else 255), dtype=np.float32)
-                    image1 += bw
-                    num_images += 1
                     
-                    X.append(image1)
+                    X.append(bw)
                     y.append(label)
 
 
@@ -75,7 +70,7 @@ def gait_recognition(base_path):
     X_pca = pca.fit_transform(X)
 
     # Splitting data
-    x_train, x_test, y_train, y_test = train_test_split(X_pca, y, test_size=0.1, shuffle=True)
+    x_train, x_test, y_train, y_test = train_test_split(X_pca, y, test_size=0.2, shuffle=True)
 
     # Logistic Regression Training
     lg = LogisticRegression(multi_class='multinomial', solver='lbfgs', verbose=True)
