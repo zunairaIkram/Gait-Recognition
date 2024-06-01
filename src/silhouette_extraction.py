@@ -10,7 +10,7 @@ print("CUDA available:", torch.cuda.is_available())
 print("CUDA version:", torch.version.cuda)
 
 
-def get_silhouette(image, pretrained_weight = r"E:\Zunaira\UniversityCourses\Semester5\DIP\PROJECT(Human Gait Recognition)\Development\Gait-Recognition\src\pretrained\SGHM-ResNet50.pth"):
+def get_silhouette(image, pretrained_weight = r"C:\Users\Fakhi\Desktop\dipProject\Gait-Recognition\src\pretrained\SGHM-ResNet50.pth"):
     # Load Model
     model = HumanMatting(backbone='resnet50')
     device = 'cpu'  # Initialize as CPU, change to 'cuda' if available

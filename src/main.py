@@ -4,13 +4,13 @@ from data_loader import load_data_pkl
 from gaitRecognitionModel import gait_recognition
 
 # Define paths and directories
-root_folder = r"E:\Zunaira\UniversityCourses\Semester5\DIP\PROJECT(Human Gait Recognition)\Development\data\train\images"
+root_folder = r"C:\Users\Fakhi\Desktop\dipProject\train\New folder\images"
 current_directory = os.getcwd()
-data_file = r"E:\Zunaira\UniversityCourses\Semester5\DIP\PROJECT(Human Gait Recognition)\Development\image_data.pkl"
-silhouette_data_file = r"E:\Zunaira\UniversityCourses\Semester5\DIP\PROJECT(Human Gait Recognition)\Development\silhouette_data.pkl"
-silhouette_folder = r"E:\Zunaira\UniversityCourses\Semester5\DIP\PROJECT(Human Gait Recognition)\Development\data\train\silhouette"
-gei_data_file = r"E:\Zunaira\UniversityCourses\Semester5\DIP\PROJECT(Human Gait Recognition)\Development\gei_data.pkl"
-gei_folder = r"E:\Zunaira\UniversityCourses\Semester5\DIP\PROJECT(Human Gait Recognition)\Development\data\train\gei"
+data_file = r"C:\Users\Fakhi\Desktop\dipProject\train\image_data.pkl"
+silhouette_data_file = r"C:\Users\Fakhi\Desktop\dipProject\train\silhouette_data.pkl"
+silhouette_folder = r"C:\Users\Fakhi\Desktop\dipProject\train\silhouette"
+gei_data_file = r"C:\Users\Fakhi\Desktop\dipProject\train\gei_data.pkl"
+gei_folder = r"C:\Users\Fakhi\Desktop\dipProject\train\New folder\gei"
 
 def load_data(path):
     try:
