@@ -46,13 +46,13 @@ def create_gei(silhouette_data, gei_base_dir, newsize=(128, 64)):
     if not os.path.exists(gei_base_dir):
         os.makedirs(gei_base_dir)
     
-    gei_results = {}
-    for person_id, scenes in silhouette_data.items():
+    gei_results = []
+    for person_id, scenes in silhouette_data:
         person_gei_dir = os.path.join(gei_base_dir, person_id)
         if not os.path.exists(person_gei_dir):
             os.makedirs(person_gei_dir)
 
-        for scene_id, image_paths in scenes.items():
+        for scene_id, image_paths in scenes:
             images = []
             for image_path in image_paths:
                 try:
@@ -71,7 +71,42 @@ def create_gei(silhouette_data, gei_base_dir, newsize=(128, 64)):
                 print(f"gei shape: {gei.shape}")
                 gei_filename = os.path.join(person_gei_dir, f"{scene_id}.jpg")
                 plt.imsave(gei_filename, gei, cmap='gray')
-                gei_results[(person_id, scene_id)] = gei
+                gei_results.append((person_id, scene_id, gei))
 
     print("GEI generation complete.")
     return gei_results
+
+
+# def create_gei(silhouette_data, gei_base_dir, newsize=(128, 64)):
+#     if not os.path.exists(gei_base_dir):
+#         os.makedirs(gei_base_dir)
+    
+#     gei_results = []
+#     for person_id, scenes in silhouette_data.items():
+#         person_gei_dir = os.path.join(gei_base_dir, person_id)
+#         if not os.path.exists(person_gei_dir):
+#             os.makedirs(person_gei_dir)
+
+#         for scene_id, image_paths in scenes.items():
+#             images = []
+#             for image_path in image_paths:
+#                 try:
+#                     print(image_path)
+#                     image = imread(image_path)
+#                     image = image_extract(image, newsize)
+#                     if image is not None:
+#                         images.append(image)
+#                     else:
+#                         print("Error: Image extraction failed for", image_path)
+#                 except Exception as e:
+#                     print(f"Error reading {image_path}: {e}")
+
+#             if images:
+#                 gei = np.mean(images, axis=0)
+#                 print(f"gei shape: {gei.shape}")
+#                 gei_filename = os.path.join(person_gei_dir, f"{scene_id}.jpg")
+#                 plt.imsave(gei_filename, gei, cmap='gray')
+#                 gei_results[(person_id , scene_id)]= gei
+
+#     print("GEI generation complete.")
+#     return gei_results
