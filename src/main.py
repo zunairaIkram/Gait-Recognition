@@ -1,7 +1,7 @@
 import os
 from save_and_process_data import load_images, save_pkl, process_and_save_silhouettes, process_and_save_geis
 from data_loader import load_data_pkl
-from gaitRecognitionModel import gait_recognition
+from gaitRecognitionModel import gait_recognition, load_model_and_predict
 
 # Define paths and directories
 root_folder = r"E:\Zunaira\UniversityCourses\Semester5\DIP\PROJECT(Human Gait Recognition)\Development\data\train\images"
@@ -63,7 +63,22 @@ def train_model():
     except Exception as e:
         return False, f"Error training model: {e}"
 
-
+def predict(test_image_paths):
+    try:
+        if not os.path.exists('finalized_model_11_labels.sav') or not os.path.exists('pca_model_11_labels.sav'):
+            return False, "Saved model not found. Please train the model first."
+        
+        predictions = load_model_and_predict(test_image_paths)
+        results = []
+        for path, prediction in zip(test_image_paths, predictions):
+            # Extract the original label from the file path
+            original_label = os.path.basename(os.path.dirname(path))
+            results.append((path, prediction, original_label))
+        
+        print("Results:", results)  # Debugging line to check the output
+        return True, results
+    except Exception as e:
+        return False, f"Error during prediction: {e}"
 
 
 

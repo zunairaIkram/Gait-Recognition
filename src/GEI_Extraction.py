@@ -93,7 +93,19 @@ def create_gei(silhouette_data, gei_base_dir, newsize=(128, 64)):
     print("GEI generation complete.")
     return gei_results
 
+# Save GEI data in pkl file
+def save_gei_data(gei_results):
+    X = []
+    y = []
+    for (person_id, _), gei in gei_results.items():
+        X.append(gei)
+        y.append(person_id)
 
+    data = {'X': X, 'y': y}
+    return data
+    # with open(output_file, 'wb') as f:
+    #     pickle.dump(data, f)
+    # print(f"GEI data saved to {output_file}")
 
 # def create_gei(silhouette_data, gei_base_dir, newsize=(128, 64)):
 #     if not os.path.exists(gei_base_dir):

@@ -1,8 +1,9 @@
 import tkinter as tk
 from tkinter import filedialog
+from PIL import Image, ImageTk
 import customtkinter as ctk
 import os
-from main import load_data, extract_silhouettes, extract_geis, train_model
+from main import load_data, extract_silhouettes, extract_geis, train_model, predict
 
 class MainApplication(ctk.CTk):
     def __init__(self):
@@ -97,7 +98,11 @@ class MainApplication(ctk.CTk):
         ctk.CTkLabel(self.tab2_content, text="Select test images:").pack(pady=10)
         ctk.CTkButton(self.tab2_content, text="Select Images", command=self.on_select_images).pack(pady=10)
         self.test_status_label = ctk.CTkLabel(self.tab2_content, text="", width=300, anchor="w")
-        self.test_status_label.pack(pady=20, fill="x")
+        self.test_status_label.pack(pady=10, fill="x")
+        self.predict_button = ctk.CTkButton(self.tab2_content, text="Predict Gait", command=self.on_predict_gait)
+        self.predict_button.pack(pady=10)
+        self.image_frame = ctk.CTkFrame(self.tab2_content)
+        self.image_frame.pack(pady=10, fill="both", expand=True)
 
     def show_tab1(self):
         self.tab2_content.pack_forget()
@@ -144,14 +149,66 @@ class MainApplication(ctk.CTk):
     def on_train_model(self):
         success, message = train_model()
         self.status_label.configure(text=message, text_color="green" if success else "red")
-    
+
     def on_select_images(self):
         filetypes = (("Image files", "*.jpg *.png"), ("All files", "*.*"))
-        paths = filedialog.askopenfilenames(title="Open images", initialdir="/", filetypes=filetypes)
-        if paths:
-            self.test_status_label.configure(text=f"Selected images: {paths}")
-            # results = test_model(paths)
-            # self.show_results(results)
+        
+        # If there is a previously selected directory, use it. Otherwise, use the root directory
+        initial_dir = self.last_directory if hasattr(self, 'last_directory') else "/"
+        
+        selected_paths = filedialog.askopenfilenames(title="Open images", initialdir=initial_dir, filetypes=filetypes)
+        
+        if selected_paths:
+            # Save the last directory
+            self.last_directory = os.path.dirname(selected_paths[0])
+            
+            # Append new selections to the existing ones
+            if hasattr(self, 'image_paths'):
+                self.image_paths.extend(selected_paths)
+            else:
+                self.image_paths = list(selected_paths)
+            
+            # Remove duplicates
+            self.image_paths = list(set(self.image_paths))
+            
+            self.test_status_label.configure(text=f"Selected {len(self.image_paths)} images")
+            self.display_selected_images()
+
+
+    def display_selected_images(self):
+        for widget in self.image_frame.winfo_children():
+            widget.destroy()
+
+        row = 0
+        col = 0
+        for idx, path in enumerate(self.image_paths):
+            try:
+                img = Image.open(path)
+                img = img.resize((100, 100), Image.LANCZOS)  
+                img = ImageTk.PhotoImage(img)
+
+                panel = tk.Label(self.image_frame, image=img)
+                panel.image = img
+                panel.grid(row=row, column=col, padx=5, pady=5)
+
+                col += 1
+                if col > 4:
+                    col = 0
+                    row += 1
+            except Exception as e:
+                print(f"Error loading image {path}: {e}")
+
+
+    def on_predict_gait(self):
+        if not self.image_paths:
+            self.test_status_label.configure(text="No images selected", text_color="red")
+            return
+        success, results = predict(self.image_paths)
+        if success:
+            print("Show Results:", results)  # Debugging line to check the output
+            self.show_results(results)
+        else:
+            self.test_status_label.configure(text=results, text_color="red")
 
     def show_results(self, results):
         result_window = ctk.CTkToplevel(self)
@@ -162,18 +219,40 @@ class MainApplication(ctk.CTk):
         result_frame = ctk.CTkFrame(result_window)
         result_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
-        for idx, (image_path, predicted_label, original_label, is_correct) in enumerate(results):
-            image_label = ctk.CTkLabel(result_frame, text=f"Image: {os.path.basename(image_path)}")
-            image_label.grid(row=idx, column=0, padx=10, pady=5)
+        max_columns = 4  # Maximum number of columns in the grid
+        row = 0
+        col = 0
 
-            predicted_label = ctk.CTkLabel(result_frame, text=f"Predicted: {predicted_label}")
-            predicted_label.grid(row=idx, column=1, padx=10, pady=5)
+        for idx, (image_path, predicted_label, original_label) in enumerate(results):
+            try:
+                print(f"Displaying image: {image_path}, Original label: {original_label}, Predicted label: {predicted_label}") 
+                img = Image.open(image_path)
+                img = img.resize((100, 100), Image.LANCZOS)  # Use LANCZOS instead of ANTIALIAS
+                img = ImageTk.PhotoImage(img)
 
-            original_label = ctk.CTkLabel(result_frame, text=f"Original: {original_label}")
-            original_label.grid(row=idx, column=2, padx=10, pady=5)
+                # Display the image
+                image_label = ctk.CTkLabel(result_frame, image=img)
+                image_label.image = img
+                image_label.grid(row=row, column=col, padx=10, pady=5)
 
-            result = ctk.CTkLabel(result_frame, text="Correct" if is_correct else "Incorrect", text_color="green" if is_correct else "red")
-            result.grid(row=idx, column=3, padx=10, pady=5)
+                # Display the original label below the image
+                original_label_label = ctk.CTkLabel(result_frame, text=f"Original: {original_label}")
+                original_label_label.grid(row=row + 1, column=col, padx=10, pady=5)
+
+                # Display the predicted label below the original label
+                predicted_label_label = ctk.CTkLabel(result_frame, text=f"Predicted: {predicted_label}")
+                predicted_label_label.grid(row=row + 2, column=col, padx=10, pady=5)
+
+                col += 1
+                if col >= max_columns:
+                    col = 0
+                    row += 3  # Move to the next row set (3 rows per item)
+            except Exception as e:
+                print(f"Error loading image {image_path}: {e}")
+
+
+
+
 
 if __name__ == "__main__":
     app = MainApplication()
