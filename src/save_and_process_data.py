@@ -2,7 +2,7 @@ import os
 import cv2
 import pickle
 from silhouette_extraction import get_silhouette
-from GEI_Extraction import create_gei
+from GEI_Extraction import create_gei, save_gei_data
 
 def save_pkl(data, filename):
     try:
@@ -78,10 +78,11 @@ def process_and_save_silhouettes(data, silhouette_folder, silhouette_data_file):
 
 def process_and_save_geis(silhouette_data, gei_folder, gei_data_file, newsize=(128, 64)):
     gei_results = create_gei(silhouette_data, gei_folder, newsize)
-    gei_data = []
+    # gei_data = []
     total_geis = len(gei_results)
     for idx, ((person_id, scene_id), gei) in enumerate(gei_results.items(), start=1):
         print(f"Processing GEI {idx}/{total_geis}: {person_id} scene {scene_id}")
-        gei_data.append((person_id, scene_id, gei))
-    save_pkl(gei_data, gei_data_file)
+        # gei_data.append((person_id, scene_id, gei))
+    data = save_gei_data(gei_results)
+    save_pkl(data, gei_data_file)
     print("All GEI data has been saved to the pickle file.")
