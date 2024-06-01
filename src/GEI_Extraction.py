@@ -45,36 +45,54 @@ def image_extract(img,newsize):
 def create_gei(silhouette_data, gei_base_dir, newsize=(128, 64)):
     if not os.path.exists(gei_base_dir):
         os.makedirs(gei_base_dir)
-    
-    gei_results = []
-    for person_id, scenes in silhouette_data:
+
+    gei_results = {}
+
+    current_sub_folder = None
+    images = []
+
+    for person_id, sub_folder_name, image_name, thresholded_image in silhouette_data:
         person_gei_dir = os.path.join(gei_base_dir, person_id)
         if not os.path.exists(person_gei_dir):
             os.makedirs(person_gei_dir)
 
-        for scene_id, image_paths in scenes:
-            images = []
-            for image_path in image_paths:
-                try:
-                    print(image_path)
-                    image = imread(image_path)
-                    image = image_extract(image, newsize)
-                    if image is not None:
-                        images.append(image)
-                    else:
-                        print("Error: Image extraction failed for", image_path)
-                except Exception as e:
-                    print(f"Error reading {image_path}: {e}")
-
+        if sub_folder_name != current_sub_folder:
+            # If the subfolder changes, process the previous subfolder's images
             if images:
-                gei = np.mean(images, axis=0)
-                print(f"gei shape: {gei.shape}")
-                gei_filename = os.path.join(person_gei_dir, f"{scene_id}.jpg")
-                plt.imsave(gei_filename, gei, cmap='gray')
-                gei_results.append((person_id, scene_id, gei))
+                if current_sub_folder is not None:
+                    gei = np.mean(images, axis=0)
+                    print(f"gei shape: {gei.shape}")
+                    gei_filename = os.path.join(person_gei_dir, f"{current_sub_folder}.jpg")
+                    plt.imsave(gei_filename, gei, cmap='gray')
+                    gei_results[(person_id, current_sub_folder)] = gei
+                images = []  # Reset images list for each new subfolder
+            current_sub_folder = sub_folder_name
+
+        try:
+            print(f"Processing {image_name}")
+            image = thresholded_image
+            image = image_extract(image, newsize)
+
+            if image is not None:
+                images.append(image)
+                print(len(images))
+            else:
+                print("Error: Image extraction failed for", person_id, sub_folder_name, image_name)
+        except Exception as e:
+            print(f"Error reading {image_name}: {e}")
+
+    # Process the last subfolder's images
+    if images:
+        if current_sub_folder is not None:
+            gei = np.mean(images, axis=0)
+            print(f"gei shape: {gei.shape}")
+            gei_filename = os.path.join(person_gei_dir, f"{current_sub_folder}.jpg")
+            plt.imsave(gei_filename, gei, cmap='gray')
+            gei_results[(person_id, current_sub_folder)] = gei
 
     print("GEI generation complete.")
     return gei_results
+
 
 
 # def create_gei(silhouette_data, gei_base_dir, newsize=(128, 64)):
