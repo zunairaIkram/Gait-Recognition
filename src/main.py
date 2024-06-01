@@ -1,7 +1,8 @@
 import os
 from save_and_process_data import load_images, save_pkl, process_and_save_silhouettes, process_and_save_geis
 from data_loader import load_data_pkl
-from gaitRecognitionModel import gait_recognition, load_model_and_predict
+from gaitRecognitionModel import gait_recognition
+from prediction import load_model_and_predict
 
 # Define paths and directories
 root_folder = r"E:\Zunaira\UniversityCourses\Semester5\DIP\PROJECT(Human Gait Recognition)\Development\data\train\images"
