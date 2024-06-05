@@ -4,6 +4,7 @@ from sklearn.decomposition import PCA
 from sklearn.linear_model import LogisticRegression
 from PIL import Image
 import pickle
+from sklearn.svm import LinearSVC
 import pandas as pd
 from sklearn.svm import SVC
 from sklearn.ensemble import RandomForestClassifier
@@ -13,6 +14,27 @@ from sklearn.metrics import accuracy_score, f1_score
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 import seaborn as sns
+# def visualize_results(y_true, y_pred):
+#     """Visualize the results of gait recognition."""
+#     plt.figure(figsize=(10, 6))
+#     sns.set(style="whitegrid")
+    
+#     # Plot the distribution of true labels
+#     plt.subplot(1, 2, 1)
+#     sns.countplot(y_true)
+#     plt.title('Distribution of True Labels')
+#     plt.xlabel('True Label')
+#     plt.ylabel('Count')
+    
+#     # Plot the distribution of predicted labels
+#     plt.subplot(1, 2, 2)
+#     sns.countplot(y_pred)
+#     plt.title('Distribution of Predicted Labels')
+#     plt.xlabel('Predicted Label')
+#     plt.ylabel('Count')
+    
+#     plt.tight_layout()
+#     plt.show()
 
 target_size = (64, 128)
 def resize_image(image, target_size):
@@ -51,25 +73,56 @@ def gait_recognition(data):
     # PCA Transformation
     X = X.reshape(X.shape[0], -1)
     pca = PCA(0.99)
-    X_pca = pca.fit_transform(X)
+    # X_pca = pca.fit_transform(X)
+    
 
     # Splitting data
-    X_train, X_test, y_train, y_test = train_test_split(X_pca, y, test_size=0.2, shuffle=True, random_state=42)
-
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, shuffle=True)
+    X_train_pca = pca.fit_transform(X_train)
+    X_test_pca = pca.transform(X_test)
+    # print(X_train_pca[0], y_train[0])
     # Logistic Regression Training
-    lg = LogisticRegression(multi_class='multinomial', solver='lbfgs', verbose=True)
-    lg.fit(X_train, y_train)
-    y_pred = lg.predict(X_test)
-    acc = accuracy_score(y_test, y_pred)
+    # lg = LogisticRegression(solver ='lbfgs',multi_class='multinomial')
+    # lg = lg.fit(X_train_pca, y_train)
+    # y_pred = lg.predict(X_test_pca)
+    # acc = accuracy_score(y_test, y_pred)
+    C_values = [1, 0.8, 0.3, 0.1, 0.03, 0.001, 0.0001]
+    best_C = None
+    best_accuracy = 0
+    accuracies = []
 
-    print(f'Accuracy: {acc}')
+    for C in C_values:
+        svm = LinearSVC(C=C)
+        svm.fit(X_train_pca, y_train)
+        y_pred = svm.predict(X_test_pca)
+        
+        acc = accuracy_score(y_test, y_pred)
+        accuracies.append((C, acc))
+        
+        print(f"Linear SVC with C={C}")
+        print(f'Accuracy: {acc}')
+        print("-----------------------------------------------------------------------")
+        
+        if acc > best_accuracy:
+            best_accuracy = acc
+            best_C = C
+
+    print(f'Best C value: {best_C} with accuracy: {best_accuracy}')
+
+    # Save the best model
+    best_svm = LinearSVC(C=best_C)
+    best_svm.fit(X_train_pca, y_train)
+    
+    
+
+    
     # sns.countplot(y)
     # plt.show()
 
     # Save the models to disk
-    pickle.dump(lg, open('finalized_model_11_labels.sav', 'wb'))
+    pickle.dump(best_svm, open('finalized_model_11_labels.sav', 'wb'))
     pickle.dump(pca, open('pca_model_11_labels.sav', 'wb'))
-
+    # visualize_results(y_test, y_pred)
     return acc
 
         # if isinstance(data, dict):
